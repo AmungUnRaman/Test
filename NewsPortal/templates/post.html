@@ -1,0 +1,43 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% block title %}
+{{ post.id }} || {{ post.title }}
+{% endblock title %}
+{% block content %}
+{% if post %}
+<h1>{{ post.title | censor }}</h1>
+<i>ID = {{ post.id }}</i>
+<h3>Дата публикации: {{ post.dateCreation|date:'d F Y' }}. Время публикации: {{ time_now|time:"H:i" }}</h3>
+<h3>Категория: {{ post.categoryType }} - {{ post.get_categoryType_display }}</h3>
+<h3>Тематика:
+{% for c in post.postCategory.all %}
+{{c.name}},
+{% endfor %}
+</h3>
+<h3>Автор: {{ post.author.authorUser.username }}</h3>
+<p>{{post.text | censor}}</p>
+<br><a href="{% url 'post_update' post.id %}"><i>Редактировать</i></a>
+                    <a href="{% url 'post_delete' post.id %}"><i> Удалить </i></a>
+<hr>
+<h3>Комментарии: </h3>
+<p><strong>Сейчас {{ time_now|date:'d F Y / H:i' }},
+    <!-- {{ time_now|time:"H:i" }}-->
+    Всего комментариев: {{ comment_list|length }}</strong></p>
+    <hr>
+    {% if comment_list %}
+        {% for comment in comment_list %}
+              <div>
+                  <h4>Автор: {{ comment.commentUser.username }}</h4>
+                  <p>Опубликовано: {{ comment.dateCreation|date:'d M Y / H:i' }}</p>
+                  <p>{{ comment.text | censor | truncatechars:51 }}</p>
+                  <p>Рейтинг: {{ comment.rating }}</p>
+                  <hr>
+              </div>
+        {% endfor %}
+    {% else %}
+        <h2>Комментариев нет!</h2>
+    {% endif %}
+{% else %}
+        <h2>Такая публикация не существует!</h2>
+{% endif %}
+{% endblock content %}

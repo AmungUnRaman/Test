@@ -1,0 +1,59 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% block title %}
+news
+{% endblock title %}
+{% block content %}
+<h1>Все публикации</h1>
+<h3>Сейчас {{ time_now|date:'d F Y / H:i' }},
+    Всего публикаций: {{ news|length }}</h3>
+    <hr>
+    {% if news %}
+<form method="GET">
+    {{ filter.form }}
+    <input type="submit" value="Найти">
+</form>
+        <table>
+            <tr>
+                <th>
+                    Заголовок
+                </th>
+                <th>
+                    Дата публикации
+                </th>
+                <th>
+                    Категория
+                </th>
+                <th>
+                    Автор
+                </th>
+                <th>
+                    Текст
+                </th>
+            </tr>
+        {% for post in filter.qs %}
+            <tr>
+                <td>
+                    <a href="{% url 'post' post.id %}"><b>{{ post.title | censor }}</b></a>
+                    <br><a href="{% url 'post_update' post.id %}"><i>Редактировать</i></a>
+                    <a href="{% url 'post_delete' post.id %}"><i> Удалить </i></a>
+                </td>
+                <td>
+                    {{ post.dateCreation|date:'d M Y / H:i' }}
+                </td>
+                <td>
+                    {{ post.categoryType }}
+                </td>
+                <td>
+                    {{ post.author.authorUser.username }}
+                </td>
+                <td>
+                    {{ post.text | censor | truncatechars:51 }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h2>Публикаций нет!</h2>
+    {% endif %}
+{% endblock content %}
