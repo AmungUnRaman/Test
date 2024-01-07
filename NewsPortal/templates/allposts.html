@@ -1,0 +1,51 @@
+{% extends 'flatpages/default.html' %}
+{% block title %}
+Posts
+{% endblock title %}
+{% block content %}
+<h1>Все публикации</h1>
+<h3>{{ time_now|date:'d M Y' }}, Всего публикаций: {{ posts|length }}</h3>
+    <hr>
+    {% if posts %}
+        <table>
+            <tr>
+                <th>
+                    Заголовок
+                </th>
+                <th>
+                    Дата публикации
+                </th>
+                <th>
+                    Категория
+                </th>
+                <th>
+                    Автор
+                </th>
+                <th>
+                    Текст
+                </th>
+            </tr>
+        {% for post in posts %}
+            <tr>
+                <td>
+                    {{ post.title }}
+                </td>
+                <td>
+                    {{ post.dateCreation|date:'d M Y' }}
+                </td>
+                <td>
+                    {{ post.categoryType }}
+                </td>
+                <td>
+                    {{ post.author.authorUser.username }}
+                </td>
+                <td>
+                    {{ post.text|truncatewords:20 }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <h2>Публикаций нет!</h2>
+    {% endif %}
+{% endblock content %}
